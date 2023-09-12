@@ -291,7 +291,7 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
     data : ndarray
         2D array with image data
     target : ndarray
-        2D array with target data
+        2D array with target data; orientation, pixel number and extent should match image data (or vice versa)
     direction : int, optional
         np-direction of the lines in 2D data
     width_data : int, optional
@@ -313,6 +313,9 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
         and the number of found maxima
     
     """    
+
+    data_average_1D = np.sum(data, axis = (1-direction))
+    target_
 
 
 if __name__ == "__main__":
