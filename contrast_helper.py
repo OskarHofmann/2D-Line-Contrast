@@ -375,7 +375,7 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
 
 if __name__ == "__main__":
 
-    basepath = path.dirname(__file__)
+    # basepath = path.dirname(__file__)
     
     #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
     #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, use_ampd= True))
@@ -384,13 +384,11 @@ if __name__ == "__main__":
     print(contrastTargetData(target, target, direction = 1, show_plot= True, show_average= True))
     
 
-    #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
     #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, direction= 1, found_maxima= True))
 
     #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***.txt"))
     #print(contrast(np.genfromtxt(filepath), show_plot= True))
 
-    # Lines = np.load(r'***REMOVED***')
     # plt.imshow(Lines)
     # plt.colorbar()
     # plt.show()
@@ -400,14 +398,10 @@ if __name__ == "__main__":
     # lines = createLines(5, size = 1.1, fillFactor = 1/1.1, super_exp = 12)
     # lines = np.transpose(lines)
 
-    # np.savetxt(r'***REMOVED***\lines.txt', lines, delimiter = '\t')
 
     # plt.set_cmap('inferno')
     # plt.axis('off')
     # plt.imshow(lines)
 
-    # plt.savefig(r'***REMOVED***', bbox_inches = 'tight')
 
     # plt.show()
-
-    # np.save(r'***REMOVED***', lines)
