@@ -6,11 +6,8 @@ from os import path
 from math import sqrt, log, floor, ceil
 from scipy import ndimage
 import ampd
-# more_itertools is only needed for contrastIndependent() and is not a standard library
-try:
-    import more_itertools as mit
-except:
-    pass
+import more_itertools as mit
+
 
 
 def createLines(gratingNumber, size=1, Nx=1023, Ny=1023, direction=0, super_exp = 4, fillFactor=0.95, smooth_off_axis = True, crop_off_axis = True,line_broadness_factor=1, **kwargs):
@@ -256,7 +253,7 @@ def contrastIndependent(data, direction = 0, width_data = 1, width_lines = 1, us
         return (-1,0,0)
     if len(min) < (len(max)/2):
         if auto_zoom:
-            return contrast(data, direction, width_data, width_lines*0.95, use_ampd, auto_zoom, show_plot, show_peaks, show_average)
+            return contrastIndependent(data, direction, width_data, width_lines*0.95, use_ampd, auto_zoom, show_plot, show_peaks, show_average)
         else:
             return (-1, 0, 0)
 
@@ -314,8 +311,66 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
     
     """    
 
+    if data.shape != target.shape:
+        raise ValueError("data and target must have the same shape")
+
     data_average_1D = np.sum(data, axis = (1-direction))
-    target_
+    target_average_1D = np.sum(target, axis = (1-direction))
+
+    #normalize target (expected values between 0 and 1)
+    target_average_1D = target_average_1D/np.max(target_average_1D)
+
+    #identify positions of lines and valleys
+    target_high_pos = np.argwhere(target_average_1D > 0.5)
+    target_low_pos = np.argwhere(target_average_1D < 0.5)
+
+    #find groups of consecutive indices to identify individual peaks and valleys
+    groups_high = [list(group) for group in mit.consecutive_groups(target_high_pos)]
+    groups_low = [list(group) for group in mit.consecutive_groups(target_low_pos)]
+
+    maxima = []
+    minima = []
+
+    max_pos = []
+    min_pos = []
+
+    for group in groups_high:
+        peak = data_average_1D[group[0][0]:group[-1][0]+1]
+        maxima.append(np.max(peak))
+        max_pos.append(np.argmax(peak)+group[0][0])
+
+    for group in groups_low:
+        valley = data_average_1D[group[0][0]:group[-1][0]+1]
+        minima.append(np.min(valley))
+        min_pos.append(np.argmin(valley)+group[0][0])
+
+    #plot
+    if show_plot:
+        #plt.plot(np.linspace(-width_lines/2,width_lines/2,average_1D.size),average_1D)
+        plt.plot(data_average_1D)
+        if show_peaks:
+            plt.plot(max_pos,maxima,'o')
+            plt.plot(min_pos,minima,'o')
+        if show_average:
+           plt.hlines(max_average,0,data_average_1D.size -1)
+           plt.hlines(min_average,0,data_average_1D.size -1)
+        plt.show()
+
+    #calculate the average of all maxima and minima
+    max_average = np.average(maxima)
+    min_average = np.average(minima)
+
+    #calculate std. deviation
+    max_std = sqrt(np.var(maxima))
+    min_std = sqrt(np.var(minima))
+
+    #calculate contrast and its uncertainty from the uncertainties of max and min
+    c_sum = max_average + min_average
+    c_diff = max_average - min_average
+    contrast_avg = c_diff/c_sum
+    contrast_std = sqrt(max_std**2 * (1/c_sum - (c_diff/c_sum**2))**2 + min_std**2 * (1/c_sum + (c_diff/c_sum**2))**2) #verified with ufloat (not a standard package)
+        
+    return contrast_avg, contrast_std, len(maxima)
 
 
 if __name__ == "__main__":
@@ -324,6 +379,9 @@ if __name__ == "__main__":
     
     #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
     #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, use_ampd= True))
+
+    target = createLines(20, size = 3*1.1, Nx = 1024, Ny = 1024, fillFactor = 1/1.1, direction = 1, super_exp = 12)
+    contrastTargetData(target, target, direction = 1, show_plot= True, show_average= True)
     
 
     #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
@@ -339,17 +397,17 @@ if __name__ == "__main__":
     # print(Lines.shape)
     # print(contrast(Lines, direction=1, show_plot=True))
 
-    lines = createLines(5, size = 1.1, fillFactor = 1/1.1, super_exp = 12)
-    lines = np.transpose(lines)
+    # lines = createLines(5, size = 1.1, fillFactor = 1/1.1, super_exp = 12)
+    # lines = np.transpose(lines)
 
     # np.savetxt(r'***REMOVED***\lines.txt', lines, delimiter = '\t')
 
-    plt.set_cmap('inferno')
-    plt.axis('off')
-    plt.imshow(lines)
+    # plt.set_cmap('inferno')
+    # plt.axis('off')
+    # plt.imshow(lines)
 
     # plt.savefig(r'***REMOVED***', bbox_inches = 'tight')
 
-    plt.show()
+    # plt.show()
 
     # np.save(r'***REMOVED***', lines)
