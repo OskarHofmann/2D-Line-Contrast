@@ -344,6 +344,10 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
         minima.append(np.min(valley))
         min_pos.append(np.argmin(valley)+group[0][0])
 
+    #calculate the average of all maxima and minima
+    max_average = np.average(maxima)
+    min_average = np.average(minima)
+
     #plot
     if show_plot:
         #plt.plot(np.linspace(-width_lines/2,width_lines/2,average_1D.size),average_1D)
@@ -355,10 +359,6 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
            plt.hlines(max_average,0,data_average_1D.size -1)
            plt.hlines(min_average,0,data_average_1D.size -1)
         plt.show()
-
-    #calculate the average of all maxima and minima
-    max_average = np.average(maxima)
-    min_average = np.average(minima)
 
     #calculate std. deviation
     max_std = sqrt(np.var(maxima))
@@ -381,7 +381,7 @@ if __name__ == "__main__":
     #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, use_ampd= True))
 
     target = createLines(20, size = 3*1.1, Nx = 1024, Ny = 1024, fillFactor = 1/1.1, direction = 1, super_exp = 12)
-    contrastTargetData(target, target, direction = 1, show_plot= True, show_average= True)
+    print(contrastTargetData(target, target, direction = 1, show_plot= True, show_average= True))
     
 
     #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
