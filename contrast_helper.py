@@ -376,33 +376,8 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
 
 if __name__ == "__main__":
 
-    # basepath = path.dirname(__file__)
+    data = createLines(20, size = 3*1.1, Nx = 1024, Ny = 1024, fillFactor = 1/1.1, direction = 1, super_exp = 12)
+    print(contrastTargetData(data, target = data, direction = 1, show_plot= True, show_average= True))
     
-    #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***"))
-    #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, use_ampd= True))
-
-    target = createLines(20, size = 3*1.1, Nx = 1024, Ny = 1024, fillFactor = 1/1.1, direction = 1, super_exp = 12)
-    print(contrastTargetData(target, target, direction = 1, show_plot= True, show_average= True))
-    
-
-    #print(contrast(np.load(filepath), show_plot= True, auto_zoom= True, width_lines=1, direction= 1, found_maxima= True))
-
-    #filepath = path.abspath(path.join(basepath, "..", "***REMOVED***.txt"))
-    #print(contrast(np.genfromtxt(filepath), show_plot= True))
-
-    # plt.imshow(Lines)
-    # plt.colorbar()
-    # plt.show()
-    # print(Lines.shape)
-    # print(contrast(Lines, direction=1, show_plot=True))
-
-    # lines = createLines(5, size = 1.1, fillFactor = 1/1.1, super_exp = 12)
-    # lines = np.transpose(lines)
-
-
-    # plt.set_cmap('inferno')
-    # plt.axis('off')
-    # plt.imshow(lines)
-
-
-    # plt.show()
+    plt.imshow(data)
+    plt.show()
