@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from os import path
 from math import sqrt, log, floor, ceil
 from scipy import ndimage
-import ampd
+from . import ampd
 import more_itertools as mit
 
 
@@ -358,6 +358,7 @@ def contrastTargetData(data, target, direction = 0, width_data = 1, width_lines 
         if show_average:
            plt.hlines(max_average,0,data_average_1D.size -1)
            plt.hlines(min_average,0,data_average_1D.size -1)
+        plt.ylim(0, np.max(maxima))
         plt.show()
 
     #calculate std. deviation
